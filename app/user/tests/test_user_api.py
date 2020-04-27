@@ -37,11 +37,11 @@ class PublicApiUserTests(TestCase):
     def test_create_user_already_exists(self):
         """Test create user that already exists"""
         payload = {
-            'username': 'test@test.com',
+            'email': 'test@test.com',
             'password': 'passwordsecur3',
             'name': 'chicho'
         }
-        user1 = create_user(**payload)
+        create_user(**payload)
         response = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -59,11 +59,10 @@ class PublicApiUserTests(TestCase):
         """Test create a token for an existing user"""
         payload = {
             'email': 'test@test2.com',
-            'password': 'passworod3',
-            'name': 'sdsfsdfdf'
+            'password': 'pass43w31o3rod3',
         }
         create_user(**payload)
-        response = self.client.post(responseTOKEN_URL, payload)
+        response = self.client.post(TOKEN_URL, payload)
         self.assertIn('token', response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -94,18 +93,19 @@ class PublicApiUserTests(TestCase):
 
     def test_retrieve_user_unauthorized(self):
         """Test retrieve a user without token"""
-        response =  self.client.get(ME_URL)
+        response = self.client.get(ME_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_password_too_short(self):
         """Test that a password is too short for creating the user"""
         payload = {
             'email': 'asd@asd.com',
-            'password':'123',
+            'password': '123',
             'name': 'asdssad'
         }
         response = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 class PrivateApiUserTests(TestCase):
     """Test private api endpoints"""
@@ -136,5 +136,5 @@ class PrivateApiUserTests(TestCase):
             'name': 'carlangas',
             'password': 'securepassword123'
         }
-        self.client.patch(ME_URL, payload)
+        response = self.client.patch(ME_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

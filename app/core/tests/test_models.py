@@ -1,6 +1,5 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.contrib.auth import get_user_model
-from core import models
 
 
 def sample_user(email='testuser@tes.com', password='password123'):
@@ -10,7 +9,7 @@ def sample_user(email='testuser@tes.com', password='password123'):
 
 class UserModelTests(TestCase):
     """Tests users model"""
-    
+
     def test_user_model_email_successful(self):
         """Tests the successful creation of a simple user"""
         email = 'test@test.com'
@@ -26,7 +25,7 @@ class UserModelTests(TestCase):
     def test_create_user_invalid_email(self):
         """Tests creating a new user with invalid email"""
         with self.assertRaises(ValueError):
-            get_user_model().objects.create_user(None, '213we')    
+            get_user_model().objects.create_user(None, '213we')
 
     def test_create_superuser(self):
         """Test thta superuser is created"""
