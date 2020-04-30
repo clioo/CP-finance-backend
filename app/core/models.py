@@ -56,7 +56,7 @@ class BaseBudget(models.Model):
                                    verbose_name='Descripción', blank=True)
     amount = models.FloatField(verbose_name='Cantidad',
                                validators=[validate_cero])
-    user = models.ForeignKey('User', on_delete=models.PROTECT,
+    user = models.ForeignKey('User', on_delete=models.CASCADE,
                              verbose_name='Usuario')
 
     class Meta:
@@ -65,7 +65,7 @@ class BaseBudget(models.Model):
 
 class BaseTag(models.Model):
     user = models.ForeignKey('User', verbose_name=_('User'),
-                             on_delete=models.PROTECT)
+                             on_delete=models.CASCADE)
     name = models.CharField(max_length=255, verbose_name=_('Name'))
 
     class Meta:
@@ -89,9 +89,9 @@ class ExpensesTag(BaseTag):
 
 
 class MonthBudget(BaseBudget):
-    annual_budget = models.ForeignKey('AnnualBudget', on_delete=models.PROTECT,
+    annual_budget = models.ForeignKey('AnnualBudget', on_delete=models.CASCADE,
                                       verbose_name=_('Annual budget'))
-    expenses_tag = models.ForeignKey('ExpensesTag', on_delete=models.PROTECT,
+    expenses_tag = models.ForeignKey('ExpensesTag', on_delete=models.CASCADE,
                                      verbose_name=_('Expenses tag'))
 
     def __str__(self):
@@ -103,14 +103,14 @@ class Expense(BaseBudget):
     date = models.DateField(verbose_name=_('Date'))
     expenses_tag = models.ForeignKey(
         'ExpensesTag',
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
         verbose_name=_('Expenses tag')
     )
     month_budget = models.ForeignKey(
         'MonthBudget',
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
         verbose_name=_('Month budget')
