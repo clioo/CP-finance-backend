@@ -53,23 +53,33 @@ class User(AbstractBaseUser, PermissionsMixin):
 class BaseBudget(models.Model):
     """Base budget model that validates amount"""
     description = models.CharField(max_length=255,
-                                   verbose_name='Descripción')
+                                   verbose_name='Descripción', blank=True)
     amount = models.FloatField(verbose_name='Cantidad',
                                validators=[validate_cero])
     user = models.ForeignKey('User', on_delete=models.PROTECT,
                              verbose_name='Usuario')
 
+    class Meta:
+        abstract = True
+
 
 class BaseTag(models.Model):
-    user = models.ForeignKey('User', verbose_name=_('User'))
+    user = models.ForeignKey('User', verbose_name=_('User'),
+                             on_delete=models.PROTECT)
     name = models.CharField(max_length=255, verbose_name=_('Name'))
+
+    class Meta:
+        abstract = True
 
 
 class AnnualBudget(BaseBudget):
-    year = models.IntegerField(verbose_name=_('Year'), choices=year_choices)
+    year = models.IntegerField(verbose_name=_('Year'), choices=year_choices())
 
     class Meta:
         unique_together = ['year', 'user']
+
+    def __str__(self):
+        return str(self.year) + ' budget'
 
 
 class ExpensesTag(BaseTag):
@@ -86,6 +96,7 @@ class MonthBudget(BaseBudget):
 
     def __str__(self):
         return _('Budget for') + ' ' + self.expenses_tag.name
+
 
 class Expense(BaseBudget):
     """Single expense, detailed"""
@@ -107,9 +118,15 @@ class Expense(BaseBudget):
 
     def save(self, *args, **kwargs):
         if self.expenses_tag and self.month_budget:
-            raise ValueError(_("""You can choose just one option: 
+            raise ValueError(_("""You can choose just one option:
                                   month budget or expenses tag"""))
         elif not self.expenses_tag and not self.month_budget:
-            raise ValueError(_("""You need to choose just option: 
+            raise ValueError(_("""You need to choose just option:
                                   month budget or expenses tag"""))
-        super(Expense, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        if self.expenses_tag:
+            return self.expenses_tag.name
+        elif self.month_budget:
+            return self.month_budget.expenses_tag.name
