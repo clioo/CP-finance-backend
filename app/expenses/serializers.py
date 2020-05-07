@@ -8,7 +8,7 @@ class AnnualBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnnualBudget
         fields = ('year', 'description', 'amount')
-        read_only_fields =  ('user', 'id',)
+        read_only_fields = ('user', 'id',)
 
 
 class ExpensesTagSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class ExpensesTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExpensesTag
         fields = ('name',)
-        read_only_fields =  ('user', 'id',)
+        read_only_fields = ('user', 'id',)
 
 
 class MonthBudgetSerializer(serializers.ModelSerializer):
@@ -26,4 +26,14 @@ class MonthBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonthBudget
         fields = ('annual_budget', 'expenses_tag', 'description', 'amount',)
+        read_only_fields = ('user', 'id',)
+
+
+class ExpenseSerializer(serializers.ModelSerializer):
+    """Serializer for single expesnes"""
+
+    class Meta:
+        model = Expense
+        fields = ('date', 'description', 'amount', 'month_budget',
+                  'expenses_tag')
         read_only_fields = ('user', 'id',)

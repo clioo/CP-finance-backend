@@ -6,10 +6,10 @@ from core.models import AnnualBudget, MonthBudget, Expense, ExpensesTag
 
 
 class BaseBudgetViewSet(viewsets.GenericViewSet,
-                          mixins.ListModelMixin,
-                          mixins.CreateModelMixin,
-                          mixins.UpdateModelMixin,
-                          mixins.RetrieveModelMixin):
+                        mixins.ListModelMixin,
+                        mixins.CreateModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.RetrieveModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -38,3 +38,9 @@ class MonthBudgetViewSet(BaseBudgetViewSet):
     """Manage month budget in the database"""
     queryset = MonthBudget.objects.all()
     serializer_class = serializers.MonthBudgetSerializer
+
+
+class ExpenseViewSet(BaseBudgetViewSet):
+    """Manage single expenses"""
+    queryset = Expense.objects.all()
+    serializer_class = serializers.ExpenseSerializer
