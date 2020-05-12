@@ -155,3 +155,52 @@ class ModelTests(TestCase):
                 user=self.user
             )
             expense1.save()
+
+
+class IncomeTests(TestCase):
+    """Test income models"""
+
+    def setUp(self):
+        self.user = sample_user()
+
+    def test_create_income_success(self):
+        """Test create an income successfully"""
+        income = models.Income.objects.create(
+            description='siepp',
+            amount=3000,
+            user=self.user,
+            periodicity='m',
+            date='2020-12-12'
+        )
+        self.assertTrue(income)
+
+    def test_create_income_no_date_error(self):
+        """Test create an income without date"""
+        with self.assertRaises(IntegrityError):
+            models.Income.objects.create(
+                description='siepp',
+                amount=3000,
+                user=self.user,
+                periodicity='m'
+            )
+
+    def test_create_income_no_amount_error(self):
+        """Test create an income without amount"""
+        with self.assertRaises(IntegrityError):
+            models.Income.objects.create(
+                description='siepp',
+                user=self.user,
+                periodicity='m',
+                date='2020-12-12'
+            )
+
+    def test_create_income_no_periodicity_success(self):
+        """Test create an income without periodicity"""
+        income = models.Income.objects.create(
+            description='siepp',
+            amount=3000,
+            user=self.user,
+            periodicity='m',
+            date='2020-12-12'
+        )
+        self.assertTrue(income)

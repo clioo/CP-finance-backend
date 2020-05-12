@@ -2,10 +2,11 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.urls import reverse
-from django.contrib.auth import get_user_model
-from core.models import AnnualBudget, ExpensesTag, MonthBudget, Expense
 from django.db.utils import IntegrityError
 from datetime import datetime
+from expenses.tests.utils import sample_user, sample_expenses_tag,\
+                                 sample_annual_budget, sample_month_budget,\
+                                 sample_expense
 
 
 ANNUAL_BUDGET_LIST_URL = reverse('expenses:annualbudget-list')
@@ -34,47 +35,6 @@ def expense_detail_url(expense_id):
     return reverse('expenses:expense-detail', args=[expense_id])
 
 
-def sample_user(email='test@test.com', password='password1234'):
-    return get_user_model().objects.create_user(email=email,
-                                                password=password)
-
-
-def sample_expenses_tag(user, name='cheve'):
-    return ExpensesTag.objects.create(user=user, name=name)
-
-
-def sample_annual_budget(user, year=2020,
-                         amount=300000, description=''):
-    return AnnualBudget.objects.create(
-        user=user,
-        amount=amount,
-        year=year,
-        description=description
-    )
-
-
-def sample_month_budget(user, **params):
-    defaults = {
-        'description': 'mensualidad carro',
-        'amount': 3000,
-        'annual_budget': sample_annual_budget(user),
-        'expenses_tag': sample_expenses_tag(user)
-    }
-    defaults.update(params)
-    return MonthBudget.objects.create(user=user, **defaults)
-
-
-def sample_expense(user, **params):
-    """Requires month_budget or expenses_tag in params"""
-    defaults = {
-        'description': 'cerveza',
-        'amount': 3000,
-        'date': datetime.now(),
-    }
-    defaults.update(params)
-    return Expense.objects.create(user=user, **defaults)
-
-
 class PublicExpensesTests(TestCase):
     """Test public endpoints for expenses app"""
 
@@ -84,6 +44,21 @@ class PublicExpensesTests(TestCase):
     def test_get_annual_budget_unauthorize(self):
         """Test that anonumous users can not see annual budgets"""
         response = self.client.get(ANNUAL_BUDGET_LIST_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_month_budget_aunauthorized(self):
+        """Test that anonymous users can not see monthly budgets"""
+        response = self.client.get(MONTH_BUDGET_LIST_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_expenses_tag_aunauthorized(self):
+        """Test that anonymous users can not see expenses tag"""
+        response = self.client.get(EXPENSES_TAG_LIST_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_expenses_aunauthorized(self):
+        """Test that anonymous users can not see expenses"""
+        response = self.client.get(EXPENSE_LIST_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 

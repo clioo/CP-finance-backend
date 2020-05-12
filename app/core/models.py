@@ -130,3 +130,13 @@ class Expense(BaseBudget):
             return self.expenses_tag.name
         elif self.month_budget:
             return self.month_budget.expenses_tag.name
+
+
+class Income(BaseBudget):
+    periodicityChoices = (
+        ('m', _('Monthly')),
+        ('a', _('Annual'))
+    )
+    periodicity = models.CharField(max_length=255, blank=True,
+                                   choices=periodicityChoices)
+    date = models.DateField()
