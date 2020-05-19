@@ -22,7 +22,7 @@ class PublicIncomeTests(TestCase):
 
     def test_get_incomes_unauthorized(self):
         """Test get incomes unauthorized"""
-        self.client.get(INCOME_LIST)
+        response = self.client.get(INCOME_LIST)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -43,7 +43,6 @@ class PrivateIncomeTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(incomes_in_database, 3)
 
-
     def test_create_simple_income_success(self):
         """Test create a simple income with no periodicity"""
         payload = {
@@ -52,7 +51,7 @@ class PrivateIncomeTests(TestCase):
             'description': 'siepp'
         }
         response = self.client.post(INCOME_LIST, payload)
-        income = Income.objects.get(response.data.get('id'))
+        income = Income.objects.get(id=response.data.get('id'))
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(income)
 
@@ -65,7 +64,7 @@ class PrivateIncomeTests(TestCase):
             'periodicity': 'm'
         }
         response = self.client.post(INCOME_LIST, payload)
-        income = Income.objects.get(response.data.get('id'))
+        income = Income.objects.get(id=response.data.get('id'))
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(income)
 
@@ -77,7 +76,7 @@ class PrivateIncomeTests(TestCase):
         response = self.client.patch(url, payload)
         income.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(income.amount, resnpose.data['amount'])
+        self.assertEqual(income.amount, response.data['amount'])
 
     def test_create_income_no_date_error(self):
         """Test create an income with no date"""

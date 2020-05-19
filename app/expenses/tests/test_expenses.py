@@ -7,6 +7,7 @@ from datetime import datetime
 from expenses.tests.utils import sample_user, sample_expenses_tag,\
                                  sample_annual_budget, sample_month_budget,\
                                  sample_expense
+from core.models import AnnualBudget
 
 
 ANNUAL_BUDGET_LIST_URL = reverse('expenses:annualbudget-list')

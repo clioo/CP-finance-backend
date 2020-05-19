@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from core.models import AnnualBudget, ExpensesTag, MonthBudget, Expense, Income
+from datetime import datetime
 
 
 def sample_user(email='test@test.com', password='password1234'):

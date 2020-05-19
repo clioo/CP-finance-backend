@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import AnnualBudget, MonthBudget, Expense, ExpensesTag
+from core.models import AnnualBudget, MonthBudget, Expense, ExpensesTag, Income
 
 
 class AnnualBudgetSerializer(serializers.ModelSerializer):
@@ -37,3 +37,12 @@ class ExpenseSerializer(serializers.ModelSerializer):
         fields = ('date', 'description', 'amount', 'month_budget',
                   'expenses_tag')
         read_only_fields = ('user', 'id',)
+
+
+class IncomeSerializer(serializers.ModelSerializer):
+    """Serializer for single incomes"""
+
+    class Meta:
+        model = Income
+        fields = ('date', 'description', 'amount', 'periodicity', 'id')
+        read_only_fields = ('user', 'id')

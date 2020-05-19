@@ -2,7 +2,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from expenses import serializers
-from core.models import AnnualBudget, MonthBudget, Expense, ExpensesTag
+from core.models import AnnualBudget, MonthBudget, Expense, ExpensesTag, Income
 
 
 class BaseBudgetViewSet(viewsets.GenericViewSet,
@@ -44,3 +44,9 @@ class ExpenseViewSet(BaseBudgetViewSet):
     """Manage single expenses"""
     queryset = Expense.objects.all()
     serializer_class = serializers.ExpenseSerializer
+
+
+class IncomeViewSet(BaseBudgetViewSet):
+    """Manage single incomes"""
+    queryset = Income.objects.all()
+    serializer_class = serializers.IncomeSerializer
