@@ -20,12 +20,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'kd_ghlsoa5(xh%ae^&4p$t+(mxhk=bt&j+58uj#*m@yc04scfb'
+SECRET_KEY = os.getenv('SECRET_KEY','dsf123asdasd123213sad21')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'finances-env.eba-3vhrfiq8.us-west-2.elasticbeanstalk.com'
+]
+ALLOWED_HOSTS.extend(os.getenv('DJANGO_ALLOWED_HOSTS', '').split(' '))
 
 
 # Application definition
@@ -126,5 +130,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+
+STATIC_URL = "/staticfiles/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/vol/web'
 AUTH_USER_MODEL = 'core.User'
